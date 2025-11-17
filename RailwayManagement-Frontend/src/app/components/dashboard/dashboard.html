@@ -1,0 +1,62 @@
+<div class="dashboard-page">
+<div class="dashboard-container">
+  <div class="hero-section">
+    <div class="hero-content">
+      <h1>Welcome back, {{ user?.name }}! 🚂</h1>
+      <p class="hero-subtitle">Ready for your next journey?</p>
+    </div>
+    <div class="hero-image">
+      <div class="train-icon">🚄</div>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <h2>What would you like to do today?</h2>
+    <div class="actions-grid">
+      <a routerLink="/train-search" class="action-card primary">
+        <div class="action-icon">🔍</div>
+        <div class="action-content">
+          <h3>Search & Book Trains</h3>
+          <p>Find the perfect train for your journey</p>
+        </div>
+        <div class="action-arrow">→</div>
+      </a>
+      
+      <a routerLink="/my-bookings" class="action-card">
+        <div class="action-icon">🎫</div>
+        <div class="action-content">
+          <h3>My Bookings</h3>
+          <p>View and manage your reservations</p>
+        </div>
+        <div class="action-arrow">→</div>
+      </a>
+    </div>
+  </div>
+
+  <div class="features-section">
+    <h2>Why choose our railway service?</h2>
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="feature-icon">⚡</div>
+        <h4>Fast Booking</h4>
+        <p>Book tickets in under 2 minutes</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🔒</div>
+        <h4>Secure Payment</h4>
+        <p>Multiple payment options available</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📱</div>
+        <h4>Mobile Friendly</h4>
+        <p>Access from anywhere, anytime</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🎯</div>
+        <h4>Real-time Updates</h4>
+        <p>Get instant booking confirmations</p>
+      </div>
+    </div>
+  </div>
+</div>
+</div>

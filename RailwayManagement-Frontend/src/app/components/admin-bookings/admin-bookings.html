@@ -1,0 +1,156 @@
+<div class="admin-bookings">
+  <div class="page-header">
+    <h1 class="page-title">🎟️ Booking Management</h1>
+    <p class="page-subtitle">Monitor and manage all passenger reservations</p>
+  </div>
+  
+  <div class="filters-section">
+    <div class="filters-card">
+      <div class="search-container">
+        <div class="search-icon">🔍</div>
+        <input 
+          type="text" 
+          placeholder="Search by PNR, User, or Train..." 
+          (input)="onSearch($event)"
+          class="search-input">
+      </div>
+      
+      <div class="filter-container">
+        <div class="filter-icon">📊</div>
+        <select (change)="onStatusFilter($event)" class="filter-select">
+          <option value="">All Status</option>
+          <option value="Confirmed">Confirmed</option>
+          <option value="PendingPayment">Pending Payment</option>
+          <option value="Cancelled">Cancelled</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="summary-section">
+    <div class="summary-card total-bookings">
+      <div class="card-icon">📋</div>
+      <div class="card-content">
+        <h3>Total Bookings</h3>
+        <p class="card-number">{{ filteredBookings.length }}</p>
+        <div class="card-trend positive">
+          <span class="trend-icon">↗️</span>
+          <span>All Time</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="summary-card revenue">
+      <div class="card-icon">💰</div>
+      <div class="card-content">
+        <h3>Total Revenue</h3>
+        <p class="card-number">₹{{ totalRevenue | number }}</p>
+        <div class="card-trend positive">
+          <span class="trend-icon">↗️</span>
+          <span>Confirmed Only</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="summary-card confirmed">
+      <div class="card-icon">✅</div>
+      <div class="card-content">
+        <h3>Confirmed</h3>
+        <p class="card-number">{{ getConfirmedCount() }}</p>
+        <div class="card-trend positive">
+          <span class="trend-icon">↗️</span>
+          <span>Success Rate</span>
+        </div>
+      </div>
+    </div>
+    
+    <div class="summary-card pending">
+      <div class="card-icon">⏳</div>
+      <div class="card-content">
+        <h3>Pending</h3>
+        <p class="card-number">{{ getPendingCount() }}</p>
+        <div class="card-trend neutral">
+          <span class="trend-icon">➡️</span>
+          <span>Awaiting Payment</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading-overlay">
+    <div class="loading-spinner"></div>
+    <p>Loading booking data...</p>
+  </div>
+
+  <div class="bookings-section" *ngIf="!loading">
+    <div class="section-header">
+      <h2 class="section-title">Booking Records</h2>
+      <div class="results-count">{{ filteredBookings.length }} bookings found</div>
+    </div>
+    
+    <div class="bookings-table">
+      <table>
+        <thead>
+          <tr>
+            <th><span class="th-content">🏷️ PNR</span></th>
+            <th><span class="th-content">👤 Passenger</span></th>
+            <th><span class="th-content">🚂 Train Details</span></th>
+            <th><span class="th-content">📅 Journey</span></th>
+            <th><span class="th-content">👥 Count</span></th>
+            <th><span class="th-content">💳 Fare</span></th>
+            <th><span class="th-content">📊 Status</span></th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let booking of filteredBookings" class="booking-row">
+            <td>
+              <div class="pnr-cell">
+                <span class="pnr-number">{{ booking.pnr }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="user-cell">
+                <div class="user-name">{{ booking.userName }}</div>
+                <div class="user-email">{{ booking.userEmail }}</div>
+              </div>
+            </td>
+            <td>
+              <div class="train-cell">
+                <div class="train-name">{{ booking.trainName }}</div>
+                <div class="train-route">{{ booking.trainName }}</div>
+              </div>
+            </td>
+            <td>
+              <div class="date-cell">
+                <span class="journey-date">{{ booking.journeyDate | date:'dd MMM yyyy' }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="passenger-cell">
+                <span class="passenger-count">{{ booking.passengerCount }}</span>
+                <span class="passenger-label">{{ booking.passengerCount === 1 ? 'passenger' : 'passengers' }}</span>
+              </div>
+            </td>
+            <td>
+              <div class="fare-cell">
+                <span class="fare-amount">₹{{ booking.totalFare | number }}</span>
+              </div>
+            </td>
+            <td>
+              <span class="status-badge" [ngClass]="getStatusClass(booking.status)">
+                <span class="status-icon">{{ getStatusIcon(booking.status) }}</span>
+                <span class="status-text">{{ getStatusString(booking.status) }}</span>
+              </span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+      
+      <div *ngIf="filteredBookings.length === 0" class="no-results">
+        <div class="no-results-icon">🔍</div>
+        <h3 class="no-results-title">No bookings found</h3>
+        <p class="no-results-text">Try adjusting your search criteria or filters.</p>
+      </div>
+    </div>
+  </div>
+</div>

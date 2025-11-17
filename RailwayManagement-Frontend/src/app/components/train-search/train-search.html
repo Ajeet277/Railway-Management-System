@@ -1,0 +1,197 @@
+<div class="search-page">
+  <div class="search-container">
+    <div class="page-header">
+      <h1 class="page-title">🚄 <span class="title-text">Discover Your Journey</span></h1>
+      <p class="page-subtitle">Search trains and book tickets with ease</p>
+    </div>
+    
+    <div class="search-card">
+      <div class="search-tabs">
+        <button type="button" class="tab" [class.active]="searchType === 'route'" (click)="setSearchType('route')">Search by Route</button>
+        <button type="button" class="tab" [class.active]="searchType === 'number'" (click)="setSearchType('number')">Search by Number</button>
+      </div>
+      
+      <form [formGroup]="searchForm" (ngSubmit)="onSearch()">
+        <!-- Route Search Form -->
+        <div *ngIf="searchType === 'route'">
+          <div class="search-form">
+            <div class="form-group">
+              <label class="form-label">From</label>
+              <input type="text" formControlName="source" placeholder="Source Station" class="form-input"
+                     [class.error]="searchForm.get('destination')?.hasError('sameStation')"
+                     (input)="onStationInput('source', $event)" (focus)="showDropdown('source')"
+                     (blur)="hideDropdown('source')" autocomplete="off">
+              <div class="dropdown" *ngIf="showSourceDropdown && filteredSourceStations.length > 0">
+                <div *ngFor="let station of filteredSourceStations" 
+                     class="dropdown-item" 
+                     (mousedown)="selectStation('source', station)">
+                  {{ station }}
+                </div>
+              </div>
+            </div>
+            <div class="swap-button" (click)="swapStations()">⇄</div>
+            <div class="form-group">
+              <label class="form-label">To</label>
+              <input type="text" formControlName="destination" placeholder="Destination Station" class="form-input"
+                     [class.error]="searchForm.get('destination')?.hasError('sameStation')"
+                     (input)="onStationInput('destination', $event)" (focus)="showDropdown('destination')"
+                     (blur)="hideDropdown('destination')" autocomplete="off">
+              <div class="dropdown" *ngIf="showDestinationDropdown && filteredDestinationStations.length > 0">
+                <div *ngFor="let station of filteredDestinationStations" 
+                     class="dropdown-item" 
+                     (mousedown)="selectStation('destination', station)">
+                  {{ station }}
+                </div>
+              </div>
+            </div>
+            <div class="form-group">
+              <label class="form-label">Journey Date</label>
+              <input type="date" formControlName="date" class="form-input" [min]="minDate" [max]="maxDate">
+            </div>
+            <button type="submit" [disabled]="loading || searchForm.invalid" class="search-button">
+              {{ loading ? 'Searching...' : 'Search Trains' }}
+            </button>
+          </div>
+          <div *ngIf="searchForm.get('destination')?.hasError('sameStation')" class="route-error-message">
+            <span class="error-icon">⚠️</span>
+            <span class="error-text">Source and destination cannot be the same station</span>
+          </div>
+        </div>
+        
+        <!-- Train Number Search Form -->
+        <div *ngIf="searchType === 'number'" class="search-form number-search">
+          <div class="form-group">
+            <label class="form-label">Train Number</label>
+            <input type="text" formControlName="trainNumber" placeholder="Enter Train Number" class="form-input">
+          </div>
+          <div class="form-group">
+            <label class="form-label">Journey Date</label>
+            <input type="date" formControlName="date" class="form-input" [min]="minDate" [max]="maxDate">
+          </div>
+          <button type="submit" [disabled]="loading || searchForm.invalid" class="search-button">
+            {{ loading ? 'Searching...' : 'Search Train' }}
+          </button>
+        </div>
+      </form>
+    </div>
+
+  <!-- Quick Services -->
+  <section class="services-section" *ngIf="!searched">
+    <div class="container">
+      <h2>Quick Services</h2>
+      <div class="services-grid">
+        <div class="service-card">
+          <div class="service-icon">🎫</div>
+          <h3>Book Tickets</h3>
+          <p>Book train tickets online</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">📋</div>
+          <h3>PNR Status</h3>
+          <p>Check your booking status</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">🕐</div>
+          <h3>Live Status</h3>
+          <p>Track train running status</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">💺</div>
+          <h3>Seat Availability</h3>
+          <p>Check seat availability</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">❌</div>
+          <h3>Cancel Ticket</h3>
+          <p>Cancel your booking</p>
+        </div>
+        <div class="service-card">
+          <div class="service-icon">📱</div>
+          <h3>Mobile App</h3>
+          <p>Download our mobile app</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="features-section" *ngIf="!searched">
+    <div class="container">
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3>🔒 Secure Booking</h3>
+          <p>Your transactions are protected with bank-level security</p>
+        </div>
+        <div class="feature-card">
+          <h3>⚡ Instant Confirmation</h3>
+          <p>Get instant booking confirmation via SMS and email</p>
+        </div>
+        <div class="feature-card">
+          <h3>💳 Multiple Payment Options</h3>
+          <p>Pay using UPI, cards, net banking, and wallets</p>
+        </div>
+        <div class="feature-card">
+          <h3>📞 24/7 Support</h3>
+          <p>Round-the-clock customer support for assistance</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+    <!-- Search Results -->
+    <div *ngIf="searched" class="results-section">
+      <div class="results-header">
+        <h2 class="results-title">Available Trains</h2>
+      </div>
+      
+      <div *ngIf="trains.length === 0" class="no-results">
+        <div class="no-results-icon">🚂</div>
+        <h3 class="no-results-title">No trains found</h3>
+        <p class="no-results-text">No trains available for the selected route and date.</p>
+        <button class="secondary-button" (click)="searched = false">Try Different Search</button>
+      </div>
+      
+      <div *ngFor="let train of trains" class="train-card">
+        <div class="train-details">
+          <div class="train-header">
+            <h3 class="train-name">{{ train.trainName }}</h3>
+            <span class="train-number">#{{ train.trainNumber }}</span>
+          </div>
+          
+          <div class="route-section">
+            <div class="station">
+              <div class="station-name">{{ train.source }}</div>
+              <div class="station-time">{{ train.departureTime }}</div>
+            </div>
+            <div class="route-line">
+              <div class="duration">5h 30m</div>
+              <div class="line"></div>
+            </div>
+            <div class="station">
+              <div class="station-name">{{ train.destination }}</div>
+              <div class="station-time">{{ train.arrivalTime }}</div>
+            </div>
+          </div>
+          
+          <div class="train-info">
+            <span>{{ train.class }}</span>
+            <span>{{ train.availableSeats }} seats available</span>
+          </div>
+        </div>
+        
+        <div class="booking-section">
+          <div class="price-display">
+            <span class="price">₹{{ train.fare }}</span>
+            <span class="price-label">per person</span>
+          </div>
+          <button *ngIf="!authService.isAdmin()" (click)="bookTrain(train.id)" [disabled]="train.availableSeats === 0" class="book-button">
+            {{ train.availableSeats === 0 ? 'Sold Out' : 'Book Now' }}
+          </button>
+          <div *ngIf="authService.isAdmin()" class="admin-info">
+            <span class="admin-label">🛠️ Admin View</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

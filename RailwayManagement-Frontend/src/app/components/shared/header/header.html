@@ -1,0 +1,56 @@
+<header class="navbar">
+  <div class="nav-container">
+    <div class="nav-brand">
+      <a routerLink="/">🚂 <span class="brand-text">Railway System</span></a>
+    </div>
+    
+    <nav class="nav-menu">
+      <a routerLink="/train-search" routerLinkActive="active">Search Trains</a>
+      
+      <ng-container *ngIf="authService.isAuthenticated()">
+        <a routerLink="/my-bookings" routerLinkActive="active" *ngIf="!authService.isAdmin()">My Bookings</a>
+        <a routerLink="/dashboard" routerLinkActive="active" *ngIf="!authService.isAdmin()">Dashboard</a>
+        <a routerLink="/admin" routerLinkActive="active" *ngIf="authService.isAdmin()">Admin Panel</a>
+        
+        <div class="user-profile">
+          <div class="profile-avatar">
+            <img [src]="getProfileImage()" [alt]="getUserName()" class="avatar-img">
+          </div>
+          <div class="profile-info">
+            <span class="user-name">{{ getUserName() }}</span>
+            <span class="user-role">{{ getUserRole() }}</span>
+          </div>
+          <button class="logout-btn" (click)="logout()" title="Logout">
+            <span class="logout-icon">🚪</span>
+          </button>
+        </div>
+      </ng-container>
+      
+      <ng-container *ngIf="!authService.isAuthenticated()">
+        <a routerLink="/login" routerLinkActive="active">Login</a>
+        <a routerLink="/register" routerLinkActive="active">Register</a>
+      </ng-container>
+    </nav>
+  </div>
+</header>
+
+<!-- Pending Payment Alert -->
+<div *ngIf="hasPendingPayment && authService.isAuthenticated() && !authService.isAdmin()" class="pending-payment-alert">
+  <div class="alert-content">
+    <div class="alert-icon">
+      <i class="fas fa-exclamation-triangle"></i>
+    </div>
+    <div class="alert-message">
+      <strong>Payment Pending</strong>
+      <span>Complete payment for PNR: {{ pendingPaymentData?.pnr }} - ₹{{ pendingPaymentData?.amount }}</span>
+    </div>
+    <div class="alert-actions">
+      <button (click)="resumePayment()" class="btn-complete-payment">
+        <i class="fas fa-credit-card"></i> Complete Payment
+      </button>
+      <button (click)="dismissPaymentAlert()" class="btn-dismiss" title="Dismiss">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+  </div>
+</div>

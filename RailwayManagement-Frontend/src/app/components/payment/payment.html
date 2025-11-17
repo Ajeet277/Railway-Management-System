@@ -1,0 +1,157 @@
+<div class="payment-page">
+  <div class="payment-container">
+    <!-- Payment Success Screen -->
+    <div *ngIf="paymentSuccess" class="success-screen">
+      <div class="success-animation">
+        <div class="checkmark">
+          <svg viewBox="0 0 52 52">
+            <circle cx="26" cy="26" r="25" fill="none"/>
+            <path fill="none" d="m14.1 27.2l7.1 7.2 16.7-16.8"/>
+          </svg>
+        </div>
+      </div>
+      <h2 class="success-title">Payment Successful!</h2>
+      <p class="success-message">Your booking has been confirmed. You will receive a confirmation email shortly.</p>
+      <div class="success-actions">
+        <button class="btn-primary" (click)="goToBookings()">View My Bookings</button>
+        <button class="btn-secondary" (click)="goToHome()">Book Another Ticket</button>
+      </div>
+    </div>
+
+    <!-- Payment Form -->
+    <div *ngIf="!paymentSuccess" class="payment-card">
+      <div class="page-header">
+        <h1 class="page-title">💳 Secure Payment</h1>
+        <p class="page-subtitle">Complete your railway booking payment</p>
+      </div>
+      
+      <form [formGroup]="paymentForm" (ngSubmit)="onSubmit()">
+        <div class="payment-methods">
+          <h3 class="section-title">Choose Payment Method</h3>
+          <div class="method-options">
+            <label class="method-option" [class.selected]="selectedMethod === 'CreditCard'">
+              <input type="radio" value="CreditCard" formControlName="paymentMethod" (change)="onPaymentMethodChange()">
+              <div class="method-content">
+                <span class="method-icon">💳</span>
+                <span class="method-text">Credit Card</span>
+              </div>
+            </label>
+            <label class="method-option" [class.selected]="selectedMethod === 'DebitCard'">
+              <input type="radio" value="DebitCard" formControlName="paymentMethod" (change)="onPaymentMethodChange()">
+              <div class="method-content">
+                <span class="method-icon">💳</span>
+                <span class="method-text">Debit Card</span>
+              </div>
+            </label>
+            <label class="method-option" [class.selected]="selectedMethod === 'UPI'">
+              <input type="radio" value="UPI" formControlName="paymentMethod" (change)="onPaymentMethodChange()">
+              <div class="method-content">
+                <span class="method-icon">📱</span>
+                <span class="method-text">UPI</span>
+              </div>
+            </label>
+            <label class="method-option" [class.selected]="selectedMethod === 'NetBanking'">
+              <input type="radio" value="NetBanking" formControlName="paymentMethod" (change)="onPaymentMethodChange()">
+              <div class="method-content">
+                <span class="method-icon">🏦</span>
+                <span class="method-text">Net Banking</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <!-- Card Payment Fields -->
+        <div *ngIf="selectedMethod === 'CreditCard' || selectedMethod === 'DebitCard'" class="payment-fields">
+          <div class="form-group">
+            <label class="form-label">Card Number</label>
+            <input type="text" formControlName="cardNumber" placeholder="1234 5678 9012 3456" class="form-input">
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label">Card Holder Name</label>
+            <input type="text" formControlName="cardHolderName" placeholder="John Doe" class="form-input">
+          </div>
+          
+          <div class="form-row">
+            <div class="form-group">
+              <label class="form-label">Expiry Month</label>
+              <select formControlName="expiryMonth" class="form-input">
+                <option value="">Month</option>
+                <option value="01">01</option>
+                <option value="02">02</option>
+                <option value="03">03</option>
+                <option value="04">04</option>
+                <option value="05">05</option>
+                <option value="06">06</option>
+                <option value="07">07</option>
+                <option value="08">08</option>
+                <option value="09">09</option>
+                <option value="10">10</option>
+                <option value="11">11</option>
+                <option value="12">12</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">Expiry Year</label>
+              <select formControlName="expiryYear" class="form-input">
+                <option value="">Year</option>
+                <option value="2024">2024</option>
+                <option value="2025">2025</option>
+                <option value="2026">2026</option>
+                <option value="2027">2027</option>
+                <option value="2028">2028</option>
+                <option value="2029">2029</option>
+              </select>
+            </div>
+            
+            <div class="form-group">
+              <label class="form-label">CVV</label>
+              <input type="text" formControlName="cvv" placeholder="123" maxlength="3" class="form-input">
+            </div>
+          </div>
+        </div>
+
+        <!-- UPI Payment Fields -->
+        <div *ngIf="selectedMethod === 'UPI'" class="payment-fields">
+          <div class="form-group">
+            <label class="form-label">UPI ID</label>
+            <input type="text" formControlName="upiId" placeholder="user@paytm" class="form-input">
+          </div>
+        </div>
+
+        <!-- Net Banking Fields -->
+        <div *ngIf="selectedMethod === 'NetBanking'" class="payment-fields">
+          <div class="form-group">
+            <label class="form-label">Select Bank</label>
+            <select formControlName="bankCode" class="form-input">
+              <option value="">Select Bank</option>
+              <option value="SBI">State Bank of India</option>
+              <option value="HDFC">HDFC Bank</option>
+              <option value="ICICI">ICICI Bank</option>
+              <option value="AXIS">Axis Bank</option>
+            </select>
+          </div>
+        </div>
+
+        <div *ngIf="error" class="error-message">
+          <span class="error-icon">⚠️</span>
+          <span>{{ error }}</span>
+        </div>
+
+        <button type="submit" [disabled]="loading || paymentForm.invalid" class="btn-pay">
+          <span *ngIf="loading" class="loading-spinner"></span>
+          {{ loading ? 'Processing Payment...' : 'Complete Payment' }}
+        </button>
+      </form>
+
+      <div class="security-info">
+        <div class="security-badges">
+          <span class="badge">🔒 SSL Encrypted</span>
+          <span class="badge">🛡️ Bank Level Security</span>
+          <span class="badge">✅ PCI Compliant</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

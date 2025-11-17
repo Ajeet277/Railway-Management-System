@@ -1,0 +1,271 @@
+<div class="register-page">
+  <div class="register-container">
+    <div class="page-header">
+      <h1 class="page-title">🚂 <span class="title-text">Join Railway Reservation</span></h1>
+      <p class="page-subtitle">Create your account to start booking</p> 
+    </div>
+    
+    <div class="register-card">
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label" for="name">Full Name</label>
+            <input 
+              type="text" 
+              id="name" 
+              formControlName="name" 
+              class="form-input"
+              [class.error]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched"
+              [class.success]="registerForm.get('name')?.valid && registerForm.get('name')?.touched"
+              placeholder="Enter your full name">
+            <span class="input-icon" 
+                  [class.success]="registerForm.get('name')?.valid && registerForm.get('name')?.touched"
+                  [class.error]="registerForm.get('name')?.invalid && registerForm.get('name')?.touched">
+              {{ registerForm.get('name')?.valid && registerForm.get('name')?.touched ? '✓' : 
+                 registerForm.get('name')?.invalid && registerForm.get('name')?.touched ? '✗' : '👤' }}
+            </span>
+            <div *ngIf="registerForm.get('name')?.invalid && registerForm.get('name')?.touched" class="field-error">
+              <span *ngIf="registerForm.get('name')?.errors?.['required']">Full name is required</span>
+              <span *ngIf="registerForm.get('name')?.errors?.['minlength']">Name must be at least 2 characters</span>
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="form-label" for="phone">Phone Number</label>
+            <input 
+              type="tel" 
+              id="phone" 
+              formControlName="phone" 
+              class="form-input"
+              [class.error]="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched"
+              [class.success]="registerForm.get('phone')?.valid && registerForm.get('phone')?.touched"
+              placeholder="10-digit mobile number">
+            <span class="input-icon"
+                  [class.success]="registerForm.get('phone')?.valid && registerForm.get('phone')?.touched"
+                  [class.error]="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched">
+              {{ registerForm.get('phone')?.valid && registerForm.get('phone')?.touched ? '✓' : 
+                 registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched ? '✗' : '📱' }}
+            </span>
+            <div *ngIf="registerForm.get('phone')?.invalid && registerForm.get('phone')?.touched" class="field-error">
+              <span *ngIf="registerForm.get('phone')?.errors?.['required']">Phone number is required</span>
+              <span *ngIf="registerForm.get('phone')?.errors?.['pattern']">Enter valid 10-digit mobile number starting with 6-9</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group full-width">
+          <label class="form-label" for="email">Email Address</label>
+          <input 
+            type="email" 
+            id="email" 
+            formControlName="email" 
+            class="form-input"
+            [class.error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched"
+            [class.success]="registerForm.get('email')?.valid && registerForm.get('email')?.touched"
+            placeholder="Enter your email address">
+          <span class="input-icon"
+                [class.success]="registerForm.get('email')?.valid && registerForm.get('email')?.touched"
+                [class.error]="registerForm.get('email')?.invalid && registerForm.get('email')?.touched">
+            {{ registerForm.get('email')?.valid && registerForm.get('email')?.touched ? '✓' : 
+               registerForm.get('email')?.invalid && registerForm.get('email')?.touched ? '✗' : '📧' }}
+          </span>
+          <div *ngIf="registerForm.get('email')?.invalid && registerForm.get('email')?.touched" class="field-error">
+            <span *ngIf="registerForm.get('email')?.errors?.['required']">Email address is required</span>
+            <span *ngIf="registerForm.get('email')?.errors?.['email'] || registerForm.get('email')?.errors?.['pattern']">Enter a valid email address (e.g., user@example.com)</span>
+          </div>
+        </div>
+        
+        <div class="form-group full-width">
+          <label class="form-label" for="password">Password</label>
+          <input 
+            type="password" 
+            id="password" 
+            formControlName="password" 
+            class="form-input"
+            [class.error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched"
+            [class.success]="registerForm.get('password')?.valid && registerForm.get('password')?.touched"
+            placeholder="Create a strong password"
+            (input)="checkPasswordStrength($event)">
+          <span class="input-icon"
+                [class.success]="registerForm.get('password')?.valid && registerForm.get('password')?.touched"
+                [class.error]="registerForm.get('password')?.invalid && registerForm.get('password')?.touched">
+            {{ registerForm.get('password')?.valid && registerForm.get('password')?.touched ? '✓' : 
+               registerForm.get('password')?.invalid && registerForm.get('password')?.touched ? '✗' : '🔒' }}
+          </span>
+          
+          <div class="password-strength" *ngIf="registerForm.get('password')?.value">
+            <div class="strength-bar">
+              <div class="strength-fill" [class]="passwordStrength"></div>
+            </div>
+            <div class="strength-text" [class]="passwordStrength">
+              Password strength: {{ passwordStrength | titlecase }}
+            </div>
+            
+            <div class="password-requirements">
+              <div class="requirement" [class.met]="passwordRequirements.length">
+                <span class="requirement-icon">{{ passwordRequirements.length ? '✓' : '○' }}</span>
+                At least 8 characters
+              </div>
+              <div class="requirement" [class.met]="passwordRequirements.uppercase">
+                <span class="requirement-icon">{{ passwordRequirements.uppercase ? '✓' : '○' }}</span>
+                One uppercase letter
+              </div>
+              <div class="requirement" [class.met]="passwordRequirements.lowercase">
+                <span class="requirement-icon">{{ passwordRequirements.lowercase ? '✓' : '○' }}</span>
+                One lowercase letter
+              </div>
+              <div class="requirement" [class.met]="passwordRequirements.number">
+                <span class="requirement-icon">{{ passwordRequirements.number ? '✓' : '○' }}</span>
+                One number
+              </div>
+              <div class="requirement" [class.met]="passwordRequirements.special">
+                <span class="requirement-icon">{{ passwordRequirements.special ? '✓' : '○' }}</span>
+                One special character
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group full-width">
+          <label class="form-label" for="address">Address</label>
+          <textarea 
+            id="address" 
+            formControlName="address" 
+            class="form-input"
+            [class.error]="registerForm.get('address')?.invalid && registerForm.get('address')?.touched"
+            [class.success]="registerForm.get('address')?.valid && registerForm.get('address')?.touched"
+            placeholder="Enter your complete address"
+            rows="3"></textarea>
+          <span class="input-icon"
+                [class.success]="registerForm.get('address')?.valid && registerForm.get('address')?.touched"
+                [class.error]="registerForm.get('address')?.invalid && registerForm.get('address')?.touched">
+            {{ registerForm.get('address')?.valid && registerForm.get('address')?.touched ? '✓' : 
+               registerForm.get('address')?.invalid && registerForm.get('address')?.touched ? '✗' : '🏠' }}
+          </span>
+          <div *ngIf="registerForm.get('address')?.invalid && registerForm.get('address')?.touched" class="field-error">
+            <span *ngIf="registerForm.get('address')?.errors?.['required']">Address is required</span>
+            <span *ngIf="registerForm.get('address')?.errors?.['minlength']">Address must be at least 10 characters</span>
+          </div>
+        </div>
+        
+        <div class="terms-checkbox">
+          <input type="checkbox" id="terms" formControlName="acceptTerms">
+          <label for="terms" class="terms-text">
+            I agree to the <a href="#" (click)="showTerms($event)">Terms of Service</a> and 
+            <a href="#" (click)="showPrivacy($event)">Privacy Policy</a>
+          </label>
+        </div>
+        
+        <div *ngIf="error" class="error-message">
+          <span>⚠️</span>
+          {{ error }}
+        </div>
+        
+        <div *ngIf="success" class="success-message">
+          <span>✅</span>
+          {{ success }}
+        </div>
+        
+        <button type="submit" [disabled]="loading || registerForm.invalid" class="register-button">
+          <span *ngIf="loading" class="loading-spinner"></span>
+          {{ loading ? 'Creating Account...' : 'Create Account' }}
+        </button>
+      </form>
+      
+      <div class="login-link">
+        Already have an account? <a routerLink="/login">Sign in here</a>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Terms Modal -->
+  <div class="modal-overlay" *ngIf="showTermsModal" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Terms of Service</h3>
+        <button class="close-button" (click)="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4>1. Acceptance of Terms</h4>
+        <p>By using Railway Reservation System, you agree to be bound by these Terms of Service.</p>
+        
+        <h4>2. Service Description</h4>
+        <p>Our platform provides online railway ticket booking services for passengers across India.</p>
+        
+        <h4>3. User Responsibilities</h4>
+        <ul>
+          <li>Provide accurate personal information</li>
+          <li>Keep your account credentials secure</li>
+          <li>Use the service only for legitimate bookings</li>
+          <li>Comply with railway rules and regulations</li>
+        </ul>
+        
+        <h4>4. Booking and Cancellation</h4>
+        <p>All bookings are subject to availability and railway policies. Cancellation charges may apply as per railway rules.</p>
+        
+        <h4>5. Payment Terms</h4>
+        <p>All payments must be made through authorized payment gateways. Refunds will be processed as per railway cancellation policy.</p>
+        
+        <h4>6. Limitation of Liability</h4>
+        <p>We are not liable for any delays, cancellations, or changes made by the railway authorities.</p>
+        
+        <h4>7. Modifications</h4>
+        <p>We reserve the right to modify these terms at any time. Continued use constitutes acceptance of modified terms.</p>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Privacy Modal -->
+  <div class="modal-overlay" *ngIf="showPrivacyModal" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Privacy Policy</h3>
+        <button class="close-button" (click)="closeModal()">&times;</button>
+      </div>
+      <div class="modal-body">
+        <h4>1. Information We Collect</h4>
+        <ul>
+          <li>Personal information (name, email, phone, address)</li>
+          <li>Payment information (processed securely)</li>
+          <li>Booking history and preferences</li>
+          <li>Device and usage information</li>
+        </ul>
+        
+        <h4>2. How We Use Your Information</h4>
+        <ul>
+          <li>Process your bookings and payments</li>
+          <li>Send booking confirmations and updates</li>
+          <li>Provide customer support</li>
+          <li>Improve our services</li>
+          <li>Comply with legal requirements</li>
+        </ul>
+        
+        <h4>3. Information Sharing</h4>
+        <p>We share your information only with:</p>
+        <ul>
+          <li>Railway authorities for booking purposes</li>
+          <li>Payment processors for transactions</li>
+          <li>Service providers who assist our operations</li>
+          <li>Legal authorities when required by law</li>
+        </ul>
+        
+        <h4>4. Data Security</h4>
+        <p>We implement industry-standard security measures to protect your personal information from unauthorized access, disclosure, or misuse.</p>
+        
+        <h4>5. Your Rights</h4>
+        <ul>
+          <li>Access your personal information</li>
+          <li>Correct inaccurate information</li>
+          <li>Request deletion of your data</li>
+          <li>Opt-out of marketing communications</li>
+        </ul>
+        
+        <h4>6. Cookies</h4>
+        <p>We use cookies to enhance your experience and analyze usage patterns. You can control cookie settings in your browser.</p>
+        
+        <h4>7. Contact Us</h4>
+        <p>For privacy-related questions, contact us at privacy@railwayreservation.com</p>
+      </div>
+    </div>
+  </div>
+</div>

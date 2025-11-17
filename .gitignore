@@ -1,0 +1,26 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+packages/
+*.log
+
+# Angular
+node_modules/
+dist/
+.angular/
+*.tgz
+
+# Configuration files with sensitive data
+appsettings.json
+appsettings.Development.json
+appsettings.Production.json
+
+# Database
+*.mdf
+*.ldf
+
+# Environment
+.env

@@ -1,0 +1,102 @@
+<div class="booking-container" *ngIf="train">
+  <div class="booking-card">
+    <h2>Book Your Journey</h2>
+    
+    <div class="train-summary">
+      <h3>{{ train.trainName }} ({{ train.trainNumber }})</h3>
+      <div class="route">
+        <span>{{ train.source }}</span> → <span>{{ train.destination }}</span>
+      </div>
+      <div class="timing">
+        Departure: {{ train.departureTime }} | Arrival: {{ train.arrivalTime }}
+      </div>
+      <div class="class-fare">
+        {{ train.class }} - ₹{{ train.fare }} per person
+      </div>
+    </div>
+
+    <form [formGroup]="bookingForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="journeyDate">Journey Date</label>
+        <input 
+          type="date" 
+          id="journeyDate" 
+          formControlName="journeyDate" 
+          class="form-control"
+          [min]="minDate">
+      </div>
+
+      <div class="passengers-section">
+        <div class="passengers-header">
+          <h4>Passenger Details</h4>
+          <button type="button" (click)="addPassenger()" [disabled]="passengers.length >= 6" class="btn-add">
+            Add Passenger
+          </button>
+        </div>
+
+        <div formArrayName="passengers">
+          <div *ngFor="let passenger of passengers.controls; let i = index" [formGroupName]="i" class="passenger-card">
+            <div class="passenger-header">
+              <h5>Passenger {{ i + 1 }}</h5>
+              <button type="button" (click)="removePassenger(i)" [disabled]="passengers.length <= 1" class="btn-remove">
+                Remove
+              </button>
+            </div>
+            
+            <div class="passenger-form">
+              <div class="form-group">
+                <label>Name</label>
+                <input type="text" formControlName="name" class="form-control" placeholder="Full Name"
+                       [class.error]="passenger.get('name')?.invalid && passenger.get('name')?.touched">
+                <div *ngIf="passenger.get('name')?.invalid && passenger.get('name')?.touched" class="field-error">
+                  <span *ngIf="passenger.get('name')?.errors?.['required']">Name is required</span>
+                  <span *ngIf="passenger.get('name')?.errors?.['pattern']">Name must contain only letters and spaces</span>
+                  <span *ngIf="passenger.get('name')?.errors?.['minlength']">Name must be at least 2 characters</span>
+                  <span *ngIf="passenger.get('name')?.errors?.['maxlength']">Name cannot exceed 50 characters</span>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label>Age</label>
+                <input type="number" formControlName="age" class="form-control" min="1" max="120"
+                       [class.error]="passenger.get('age')?.invalid && passenger.get('age')?.touched">
+                <div *ngIf="passenger.get('age')?.invalid && passenger.get('age')?.touched" class="field-error">
+                  <span *ngIf="passenger.get('age')?.errors?.['required']">Age is required</span>
+                  <span *ngIf="passenger.get('age')?.errors?.['min']">Age must be at least 1 year</span>
+                  <span *ngIf="passenger.get('age')?.errors?.['max']">Age cannot exceed 120 years</span>
+                </div>
+              </div>
+              
+              <div class="form-group">
+                <label>Gender</label>
+                <select formControlName="gender" class="form-control"
+                        [class.error]="passenger.get('gender')?.invalid && passenger.get('gender')?.touched">
+                  <option value="">Select Gender</option>
+                  <option value="Male">Male</option>
+                  <option value="Female">Female</option>
+                  <option value="Other">Other</option>
+                </select>
+                <div *ngIf="passenger.get('gender')?.invalid && passenger.get('gender')?.touched" class="field-error">
+                  <span *ngIf="passenger.get('gender')?.errors?.['required']">Please select gender</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="fare-summary">
+        <div class="fare-row">
+          <span>{{ passengers.length }} Passenger(s) × ₹{{ train.fare }}</span>
+          <span class="total">₹{{ getTotalFare() }}</span>
+        </div>
+      </div>
+
+      <div *ngIf="error" class="error-message">{{ error }}</div>
+
+      <button type="submit" [disabled]="loading || bookingForm.invalid" class="btn-book">
+        {{ loading ? 'Processing...' : 'Proceed to Payment' }}
+      </button>
+    </form>
+  </div>
+</div>

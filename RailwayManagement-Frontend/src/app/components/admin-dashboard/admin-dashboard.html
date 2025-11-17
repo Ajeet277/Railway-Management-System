@@ -1,0 +1,47 @@
+<div class="admin-dashboard">
+  <div class="dashboard-header">
+    <h1 class="dashboard-title">Admin Dashboard</h1>
+  </div>
+  
+  <div class="stats-grid">
+    <div class="stat-card trains">
+      <div class="stat-icon">🚂</div>
+      <div class="stat-content">
+        <h3>Total Trains</h3>
+        <p class="stat-number">{{ totalTrains }}</p>
+      </div>
+    </div>
+    <div class="stat-card bookings">
+      <div class="stat-icon">📋</div>
+      <div class="stat-content">
+        <h3>Confirmed Bookings</h3>
+        <p class="stat-number">{{ confirmedBookings }}</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="quick-actions">
+    <h2 class="section-title">Quick Actions</h2>
+    <div class="actions-grid">
+      <a routerLink="/admin/trains" class="action-card trains-action">
+        <div class="action-icon">🚂</div>
+        <div class="action-content">
+          <h3>Manage Trains</h3>
+          <p>Add, edit, or remove train schedules</p>
+        </div>
+        <div class="action-arrow">→</div>
+      </a>
+      
+      <a routerLink="/admin/bookings" class="action-card bookings-action">
+        <div class="action-icon">📋</div>
+        <div class="action-content">
+          <h3>View All Bookings</h3>
+          <p>Monitor all passenger reservations</p>
+        </div>
+        <div class="action-arrow">→</div>
+      </a>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading...</div>
+</div>

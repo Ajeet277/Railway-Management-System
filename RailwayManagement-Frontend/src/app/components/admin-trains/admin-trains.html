@@ -1,0 +1,212 @@
+<div class="admin-trains">
+  <!-- Toast Notification -->
+  <div *ngIf="showToast" class="toast" [class.success]="toastType === 'success'" [class.error]="toastType === 'error'">
+    {{ toastMessage }}
+  </div>
+
+  <div class="header">
+    <h1>Train Management</h1>
+    <button (click)="showAddForm()" class="btn-primary">Add New Train</button>
+  </div>
+
+  <div *ngIf="showForm" class="form-modal">
+    <div class="form-container">
+      <h2>{{ editingTrain ? 'Edit Train' : 'Add New Train' }}</h2>
+      <form [formGroup]="trainForm" (ngSubmit)="onSubmit()">
+        <div class="form-row">
+          <div class="form-group">
+            <label>Train Number</label>
+            <input type="text" formControlName="trainNumber" class="form-control" 
+                   [class.error]="trainForm.get('trainNumber')?.invalid && trainForm.get('trainNumber')?.touched"
+                   [readonly]="editingTrain !== null"
+                   [class.readonly]="editingTrain !== null">
+            <div *ngIf="editingTrain" class="info-message">
+              🔒 Train number cannot be changed during update
+            </div>
+            <div *ngIf="trainForm.get('trainNumber')?.invalid && trainForm.get('trainNumber')?.touched && !editingTrain" class="error-message">
+              <span *ngIf="trainForm.get('trainNumber')?.errors?.['required']">Train number is required</span>
+              <span *ngIf="trainForm.get('trainNumber')?.errors?.['pattern']">Train number must contain only numbers</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Train Name</label>
+            <input type="text" formControlName="trainName" class="form-control"
+                   [class.error]="trainForm.get('trainName')?.invalid && trainForm.get('trainName')?.touched">
+            <div *ngIf="trainForm.get('trainName')?.invalid && trainForm.get('trainName')?.touched" class="error-message">
+              <span *ngIf="trainForm.get('trainName')?.errors?.['required']">Train name is required</span>
+              <span *ngIf="trainForm.get('trainName')?.errors?.['pattern']">Train name must contain only letters and spaces</span>
+              <span *ngIf="trainForm.get('trainName')?.errors?.['minlength']">Train name must be at least 3 characters</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Source</label>
+            <input type="text" formControlName="source" class="form-control"
+                   [class.error]="trainForm.get('source')?.invalid && trainForm.get('source')?.touched">
+            <div *ngIf="trainForm.get('source')?.invalid && trainForm.get('source')?.touched" class="error-message">
+              <span *ngIf="trainForm.get('source')?.errors?.['required']">Source station is required</span>
+              <span *ngIf="trainForm.get('source')?.errors?.['pattern']">Source must contain only letters and spaces</span>
+              <span *ngIf="trainForm.get('source')?.errors?.['minlength']">Source must be at least 2 characters</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Destination</label>
+            <input type="text" formControlName="destination" class="form-control"
+                   [class.error]="trainForm.get('destination')?.invalid && trainForm.get('destination')?.touched">
+            <div *ngIf="trainForm.get('destination')?.invalid && trainForm.get('destination')?.touched" class="error-message">
+              <span *ngIf="trainForm.get('destination')?.errors?.['required']">Destination station is required</span>
+              <span *ngIf="trainForm.get('destination')?.errors?.['pattern']">Destination must contain only letters and spaces</span>
+              <span *ngIf="trainForm.get('destination')?.errors?.['minlength']">Destination must be at least 2 characters</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Departure Time</label>
+            <input type="time" formControlName="departureTime" class="form-control"
+                   [class.error]="trainForm.get('departureTime')?.invalid && trainForm.get('departureTime')?.touched">
+            <div *ngIf="trainForm.get('departureTime')?.invalid && trainForm.get('departureTime')?.touched" class="error-message">
+              Departure time is required
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Arrival Time</label>
+            <input type="time" formControlName="arrivalTime" class="form-control"
+                   [class.error]="trainForm.get('arrivalTime')?.invalid && trainForm.get('arrivalTime')?.touched">
+            <div *ngIf="trainForm.get('arrivalTime')?.invalid && trainForm.get('arrivalTime')?.touched" class="error-message">
+              Arrival time is required
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-row">
+          <div class="form-group">
+            <label>Total Seats</label>
+            <input type="number" formControlName="totalSeats" class="form-control" min="1"
+                   [class.error]="trainForm.get('totalSeats')?.invalid && trainForm.get('totalSeats')?.touched">
+            <div *ngIf="trainForm.get('totalSeats')?.invalid && trainForm.get('totalSeats')?.touched" class="error-message">
+              <span *ngIf="trainForm.get('totalSeats')?.errors?.['required']">Total seats is required</span>
+              <span *ngIf="trainForm.get('totalSeats')?.errors?.['min']">Minimum 1 seat required</span>
+              <span *ngIf="trainForm.get('totalSeats')?.errors?.['max']">Maximum 1000 seats allowed</span>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Fare (₹)</label>
+            <input type="number" formControlName="fare" class="form-control" min="0.01" step="0.01"
+                   [class.error]="trainForm.get('fare')?.invalid && trainForm.get('fare')?.touched">
+            <div *ngIf="trainForm.get('fare')?.invalid && trainForm.get('fare')?.touched" class="error-message">
+              <span *ngIf="trainForm.get('fare')?.errors?.['required']">Fare is required</span>
+              <span *ngIf="trainForm.get('fare')?.errors?.['min']">Minimum fare is ₹1</span>
+              <span *ngIf="trainForm.get('fare')?.errors?.['max']">Maximum fare is ₹50,000</span>
+            </div>
+          </div>
+        </div>
+        
+        <div class="form-group">
+          <label>Class</label>
+          <select formControlName="class" class="form-control"
+                  [class.error]="trainForm.get('class')?.invalid && trainForm.get('class')?.touched">
+            <option value="">Select Class</option>
+            <option value="AC">AC</option>
+            <option value="Non-AC">Non-AC</option>
+            <option value="Sleeper">Sleeper</option>
+            <option value="General">General</option>
+          </select>
+          <div *ngIf="trainForm.get('class')?.invalid && trainForm.get('class')?.touched" class="error-message">
+            Please select a train class
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" [disabled]="trainForm.invalid" class="btn-primary">
+            {{ editingTrain ? 'Update' : 'Add' }} Train
+          </button>
+          <button type="button" (click)="cancelForm()" class="btn-secondary">Cancel</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">Loading trains...</div>
+
+  <div class="trains-table" *ngIf="!loading">
+    <table>
+      <thead>
+        <tr>
+          <th>Train Number</th>
+          <th>Train Name</th>
+          <th>Route</th>
+          <th>Timing</th>
+          <th>Seats</th>
+          <th>Fare</th>
+          <th>Class</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let train of trains">
+          <td>{{ train.trainNumber }}</td>
+          <td>{{ train.trainName }}</td>
+          <td>{{ train.source }} → {{ train.destination }}</td>
+          <td>{{ train.departureTime }} - {{ train.arrivalTime }}</td>
+          <td>{{ train.availableSeats }}/{{ train.totalSeats }}</td>
+          <td>₹{{ train.fare }}</td>
+          <td>{{ train.class }}</td>
+          <td>
+            <button (click)="editTrain(train)" class="btn-edit">Edit</button>
+            <button (click)="openDeleteModal(train)" class="btn-delete">Delete</button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Delete Confirmation Modal -->
+<div *ngIf="showDeleteModal" class="modal-overlay" (click)="closeDeleteModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Delete Train</h3>
+      <button class="modal-close" (click)="closeDeleteModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="warning-icon">
+        <i class="fas fa-exclamation-triangle"></i>
+      </div>
+      
+      <div class="train-info" *ngIf="selectedTrain">
+        <h4>{{ selectedTrain.trainName }}</h4>
+        <p><strong>Train Number:</strong> {{ selectedTrain.trainNumber }}</p>
+        <p><strong>Route:</strong> {{ selectedTrain.source }} → {{ selectedTrain.destination }}</p>
+        <p><strong>Total Seats:</strong> {{ selectedTrain.totalSeats }}</p>
+      </div>
+      
+      <div class="warning-message">
+        <p><strong>⚠️ This action cannot be undone!</strong></p>
+        <p>Deleting this train will permanently remove it from the system and may affect existing bookings.</p>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button 
+        class="btn-modal-cancel" 
+        (click)="closeDeleteModal()"
+        [disabled]="deleting">
+        Keep Train
+      </button>
+      <button 
+        class="btn-modal-delete" 
+        (click)="confirmDelete()"
+        [disabled]="deleting">
+        <i *ngIf="deleting" class="fas fa-spinner fa-spin"></i>
+        {{ deleting ? 'Deleting...' : 'Delete Train' }}
+      </button>
+    </div>
+  </div>
+</div>

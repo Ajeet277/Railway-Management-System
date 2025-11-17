@@ -1,0 +1,106 @@
+<div class="bookings-page">
+<div class="bookings-container">
+  <h2>My Bookings</h2>
+  
+  <div *ngIf="loading" class="loading">Loading your bookings...</div>
+  
+  <div *ngIf="error" class="error-message">{{ error }}</div>
+  
+  <div *ngIf="!loading && bookings.length === 0" class="no-bookings">
+    <p>You don't have any bookings yet.</p>
+    <a routerLink="/train-search" class="btn-search">Search Trains</a>
+  </div>
+  
+  <div *ngFor="let booking of bookings" class="booking-card">
+    <div class="booking-header">
+      <div class="pnr-status">
+        <h3>PNR: {{ booking.pnr }}</h3>
+        <span class="status" [class]="getStatusClass(booking.status)">{{ getStatusText(booking.status) }}</span>
+      </div>
+      <div class="booking-actions">
+        <button *ngIf="isPendingPayment(booking.status)" 
+                (click)="makePayment(booking)" 
+                class="btn-payment">
+          <i class="fas fa-credit-card"></i> Make Payment
+        </button>
+        <button *ngIf="isConfirmed(booking.status)" 
+                (click)="openCancelModal(booking)" 
+                class="btn-cancel">
+          <i class="fas fa-times"></i> Cancel
+        </button>
+      </div>
+    </div>
+    
+    <div class="booking-details">
+      <div class="train-info">
+        <h4>{{ booking.trainName }}</h4>
+        <p class="journey-date">Journey Date: {{ booking.journeyDate | date:'dd MMM yyyy' }}</p>
+      </div>
+      
+      <div class="fare-info">
+        <span class="total-fare">₹{{ booking.totalFare }}</span>
+        <span class="passenger-count">{{ booking.passengers.length }} Passenger(s)</span>
+      </div>
+    </div>
+    
+    <div class="passengers-list">
+      <h5>Passengers:</h5>
+      <div class="passengers">
+        <span *ngFor="let passenger of booking.passengers; let last = last" class="passenger">
+          {{ passenger.name }} ({{ passenger.age }}, {{ passenger.gender }}){{ !last ? ', ' : '' }}
+        </span>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+
+<!-- Cancellation Modal -->
+<div *ngIf="showCancelModal" class="modal-overlay" (click)="closeCancelModal()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h3>Cancel Booking</h3>
+      <button class="modal-close" (click)="closeCancelModal()">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    
+    <div class="modal-body">
+      <div class="booking-info" *ngIf="selectedBooking">
+        <h4>{{ selectedBooking.trainName }}</h4>
+        <p><strong>PNR:</strong> {{ selectedBooking.pnr }}</p>
+        <p><strong>Journey Date:</strong> {{ selectedBooking.journeyDate | date:'dd MMM yyyy' }}</p>
+        <p><strong>Total Fare:</strong> ₹{{ selectedBooking.totalFare }}</p>
+      </div>
+      
+      <div class="reason-section">
+        <label for="cancelReason">Reason for Cancellation *</label>
+        <textarea 
+          id="cancelReason"
+          [(ngModel)]="cancelReason"
+          placeholder="Please provide a reason for cancellation..."
+          rows="4"
+          maxlength="500"
+          class="reason-textarea"
+        ></textarea>
+        <div class="char-count">{{ cancelReason.length }}/500</div>
+      </div>
+    </div>
+    
+    <div class="modal-footer">
+      <button 
+        class="btn-modal-cancel" 
+        (click)="closeCancelModal()"
+        [disabled]="cancelling">
+        Keep Booking
+      </button>
+      <button 
+        class="btn-modal-confirm" 
+        (click)="confirmCancellation()"
+        [disabled]="!cancelReason.trim() || cancelling">
+        <i *ngIf="cancelling" class="fas fa-spinner fa-spin"></i>
+        {{ cancelling ? 'Cancelling...' : 'Cancel Booking' }}
+      </button>
+    </div>
+  </div>
+</div>
