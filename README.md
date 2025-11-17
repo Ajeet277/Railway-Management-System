@@ -1,229 +1,68 @@
-Railway Management System
-A comprehensive full-stack web application for online train booking and railway management operations.
+# 🚂 Railway Management System
 
-🚀 Tech Stack
-Backend
-ASP.NET Core Web API - RESTful API development
+<div align="center">
 
-Entity Framework Core - Code First approach with SQL Server
+![Railway](https://img.shields.io/badge/Railway-Management-blue?style=for-the-badge&logo=train&logoColor=white)
+![.NET](https://img.shields.io/badge/.NET-8.0-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)
+![Angular](https://img.shields.io/badge/Angular-18+-DD0031?style=for-the-badge&logo=angular&logoColor=white)
+![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?style=for-the-badge&logo=microsoft-sql-server&logoColor=white)
 
-JWT Authentication - Secure user authentication and authorization
+*A comprehensive full-stack web application for online train booking and railway management operations*
 
-BCrypt - Password hashing for enhanced security
+</div>
 
-SMTP Integration - Email notifications for bookings
+---
 
-Frontend
-Angular 18+ - Modern frontend with standalone components
+## 🌟 **Features**
 
-TypeScript - Type-safe development
+### 👤 **User Experience**
+- 🔐 **Secure Authentication** - JWT-based login system with BCrypt password hashing
+- 🔍 **Smart Train Search** - Advanced filtering by route, date, and train number
+- 🎫 **Seamless Booking** - Complete reservation workflow with real-time availability
+- 💳 **Payment Integration** - Secure payment processing with confirmation emails
+- 📧 **Email Notifications** - Instant booking confirmations and updates
+- 📱 **Responsive Design** - Modern glassmorphism UI across all devices
 
-RxJS - Reactive programming for HTTP operations
+### 👨‍💼 **Admin Dashboard**
+- 📊 **Analytics Overview** - Real-time statistics and system insights
+- 🚆 **Train Management** - Complete CRUD operations for train schedules
+- 📋 **Booking Oversight** - Monitor and manage all passenger reservations
+- 👥 **User Administration** - Comprehensive user account management
 
-Modern CSS - Glassmorphism UI design with responsive layout
+---
 
-Database
-SQL Server - Primary database with Entity Framework migrations
+## 🛠️ **Tech Stack**
 
-Code First Approach - Database schema management
+<table>
+<tr>
+<td align="center" width="50%">
 
-Testing
-xUnit & NUnit - Comprehensive unit testing frameworks
+### **Backend**
+![ASP.NET Core](https://img.shields.io/badge/ASP.NET%20Core-512BD4?style=flat-square&logo=dotnet&logoColor=white)
+![Entity Framework](https://img.shields.io/badge/Entity%20Framework-512BD4?style=flat-square&logo=dotnet&logoColor=white)
+![JWT](https://img.shields.io/badge/JWT-000000?style=flat-square&logo=jsonwebtokens&logoColor=white)
+![SQL Server](https://img.shields.io/badge/SQL%20Server-CC2927?style=flat-square&logo=microsoft-sql-server&logoColor=white)
 
-Postman - API endpoint testing and documentation
+</td>
+<td align="center" width="50%">
 
-✨ Features
-User Features
-User Registration & Login - Secure authentication with JWT tokens
+### **Frontend**
+![Angular](https://img.shields.io/badge/Angular%2018+-DD0031?style=flat-square&logo=angular&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=flat-square&logo=typescript&logoColor=white)
+![RxJS](https://img.shields.io/badge/RxJS-B7178C?style=flat-square&logo=reactivex&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?style=flat-square&logo=css3&logoColor=white)
 
-Train Search - Advanced search by route and train number
+</td>
+</tr>
+</table>
 
-Booking Management - Complete booking workflow with seat selection
+---
 
-Payment Integration - Mock payment gateway with confirmation
+## 🚀 **Quick Start**
 
-Email Notifications - Booking confirmations and updates
-
-Booking History - View and manage past reservations
-
-Cancellation System - Cancel bookings with proper status management
-
-Admin Features
-Admin Dashboard - Comprehensive system overview with statistics
-
-Train Management - Add, edit, and remove train schedules
-
-Booking Oversight - Monitor all passenger reservations
-
-User Management - Administrative controls for user accounts
-
-Technical Features
-Role-Based Authorization - Separate User and Admin access levels
-
-Global Exception Handling - Centralized error management
-
-Input Validation - DTO-level validation with custom attributes
-
-Responsive Design - Mobile-friendly interface
-
-Modern UI/UX - Glassmorphism effects with smooth animations
-
-🛠️ Setup Instructions
-Prerequisites
-.NET 8.0 SDK
-
-Node.js (v18+)
-
-SQL Server
-
-Angular CLI
-
-Backend Setup
-Clone the repository
-
-git clone https://github.com/Ajeet277/Railway-Management-System.git
-cd Railway-Management-System
-
-Copy
-Configure Database
-
-cd RailwayManagement
-# Copy appsettings.Example.json to appsettings.json
-# Update connection string with your SQL Server details
-
-Copy
-bash
-Run Database Migrations
-
-dotnet ef database update
-
-Copy
-bash
-Start Backend API
-
-dotnet run
-
-Copy
-bash
-API will be available at: https://localhost:5193
-
-Frontend Setup
-Navigate to Frontend Directory
-
-cd RailwayManagement-Frontend
-
-Copy
-bash
-Install Dependencies
-
-npm install
-
-Copy
-bash
-Start Angular Application
-
-ng serve
-
-Copy
-bash
-Frontend will be available at: http://localhost:4200
-
-📁 Project Structure
-Railway-Management-System/
-├── RailwayManagement/              # ASP.NET Core Web API
-│   ├── Controllers/                # API Controllers
-│   ├── Models/                     # Entity Models
-│   ├── DTOs/                       # Data Transfer Objects
-│   ├── Services/                   # Business Logic Services
-│   ├── Data/                       # Database Context & Migrations
-│   └── Middleware/                 # Custom Middleware
-├── RailwayManagement-Frontend/     # Angular 18+ Frontend
-│   ├── src/app/components/         # Angular Components
-│   ├── src/app/services/           # HTTP Services
-│   ├── src/app/models/             # TypeScript Models
-│   └── src/app/guards/             # Route Guards
-└── Tests/                          # Unit Test Projects
-
-Copy
-🔧 Configuration
-Database Configuration
-Update appsettings.json with your SQL Server connection string:
-
-{
-  "ConnectionStrings": {
-    "DefaultConnection": "Server=YOUR_SERVER;Database=RailwayManagementDB;Trusted_Connection=true;TrustServerCertificate=true;"
-  }
-}
-
-Copy
-json
-JWT Configuration
-Configure JWT settings for authentication:
-
-{
-  "Jwt": {
-    "Key": "your-secret-key-minimum-32-characters",
-    "Issuer": "RailwayManagementAPI",
-    "Audience": "RailwayManagementUsers"
-  }
-}
-
-Copy
-json
-🧪 Testing
-Backend Testing
-cd RailwayManagement.Tests
-dotnet test
-
-Copy
-bash
-API Testing
-Import Postman collection for endpoint testing
-
-Swagger UI available at: https://localhost:5193/swagger
-
-🚀 Deployment
-Backend Deployment
-Configure production connection strings
-
-Set up HTTPS certificates
-
-Deploy to IIS or Azure App Service
-
-Frontend Deployment
-ng build --prod
-# Deploy dist/ folder to web server
-
-Copy
-bash
-🤝 Contributing
-Fork the repository
-
-Create a feature branch (git checkout -b feature/AmazingFeature)
-
-Commit your changes (git commit -m 'Add some AmazingFeature')
-
-Push to the branch (git push origin feature/AmazingFeature)
-
-Open a Pull Request
-
-📝 License
-This project is licensed under the MIT License - see the LICENSE file for details.
-
-👨‍💻 Author
-Ajeet Kumar
-
-GitHub: @Ajeet277
-
-Email: mailto:ajeetshyanavad08@gmail.com
-
-🙏 Acknowledgments
-ASP.NET Core documentation and community
-
-Angular team for the excellent framework
-
-Entity Framework Core for seamless database operations
-
-All contributors and testers
-
-⭐ Star this repository if you found it helpful!
+### **Prerequisites**
+```bash
+✅ .NET 8.0 SDK
+✅ Node.js (v18+)
+✅ SQL Server
+✅ Angular CLI
